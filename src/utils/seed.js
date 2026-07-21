@@ -18,19 +18,18 @@ async function seedDatabase() {
     console.log("Connected to MongoDB!");
 
     // Clear existing data
-    console.log("Clearing existing Categories, Recipes, and Users...");
+    console.log("Clearing existing Categories and Recipes...");
     await Category.deleteMany({});
     await Recipe.deleteMany({});
-    await User.deleteMany({});
 
-    // Create a default Author
-    console.log("Creating default author...");
-    const author = await User.create({
-      name: "Master Chef",
-      email: "chef@spiceandsoul.com",
-      passwordHash: "hashedpassword123", // usually hashed, but this is just seed data
-      role: "admin",
-    });
+    // Find existing Author
+    console.log("Finding existing admin...");
+    const author = await User.findOne({ email: "admin@example.com" });
+    
+    if (!author) {
+      console.error("Error: admin@example.com not found. Please register this user first.");
+      process.exit(1);
+    }
 
     // Seed Categories
     console.log("Seeding categories...");
